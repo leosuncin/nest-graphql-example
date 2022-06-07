@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import loadORM from './config/orm.config';
+import { TodoModule } from './todo/todo.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import loadORM from './config/orm.config';
         return config.getOrThrow('orm');
       },
     }),
+    TodoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
