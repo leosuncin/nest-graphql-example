@@ -1,10 +1,11 @@
 import { registerAs } from '@nestjs/config';
-import { DataSourceOptions } from 'typeorm';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-const options: DataSourceOptions = {
+const options: TypeOrmModuleOptions = {
   type: 'mysql',
   url: process.env.DATABASE_URL,
   synchronize: false,
+  autoLoadEntities: true,
 };
 
 export default registerAs('orm', () => options);
