@@ -43,6 +43,8 @@ export class TaskService {
   async removeOne(id: Task['id']) {
     const task = await this.getOne(id);
 
-    return this.taskRepository.remove(task);
+    await this.taskRepository.delete({ id });
+
+    return task;
   }
 }
