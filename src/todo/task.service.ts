@@ -17,6 +17,14 @@ export class TaskService {
     return this.taskRepository.save(task);
   }
 
+  async getOne(id: Task['id']) {
+    const task = await this.taskRepository.findOneBy({ id });
+
+    if (!task) throw new NotFoundException('Task not exist');
+
+    return task;
+  }
+
   listAll() {
     return this.taskRepository.find();
   }
@@ -25,9 +33,7 @@ export class TaskService {
     id: Task['id'],
     changes: Partial<Pick<Task, 'title' | 'completed'>>,
   ) {
-    const task = await this.taskRepository.findOneBy({ id });
-
-    if (!task) throw new NotFoundException('Task not exist');
+    const task = await this.getOne(id);
 
     this.taskRepository.merge(task, changes);
 
@@ -35,9 +41,7 @@ export class TaskService {
   }
 
   async removeOne(id: Task['id']) {
-    const task = await this.taskRepository.findOneBy({ id });
-
-    if (!task) throw new NotFoundException('Task not exist');
+    const task = await this.getOne(id);
 
     return this.taskRepository.remove(task);
   }
