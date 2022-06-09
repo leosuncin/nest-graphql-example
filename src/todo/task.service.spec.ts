@@ -98,6 +98,6 @@ describe('TaskService', () => {
     await expect(
       service.removeOne('548443d7-20fd-4b06-8932-a134fdec798e'),
     ).resolves.toBeInstanceOf(Task);
-    expect(repositoryMock.remove).toHaveBeenCalled();
+    expect(repositoryMock.delete).toHaveBeenCalled();
   });
 });
