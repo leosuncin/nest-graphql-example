@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Run the unit tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+      - name: Install Node.js LTS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --strict-peer-dependencies
+      - name: Run tests
+        run: pnpm test:cov --ci --json --testLocationInResults --outputFile=result.json
+      - name: Report test results
+        uses: tanmen/jest-reporter@v1
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Monitor coverage
+        uses: slavcodev/coverage-monitor-action@1.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          coverage_format: clover
+          coverage_path: coverage/clover.xml
+          check: github.event_name == 'pull_request'
+          threshold_alert: 50
+          threshold_warning: 80
+      - name: Upload code coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-coverage
+          path: coverage
