@@ -1,10 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getDataSourceToken } from '@nestjs/typeorm';
 import * as request from 'supertest';
+import type { DataSource } from 'typeorm';
+import { runSeeders } from 'typeorm-extension';
 
 import { AppModule } from '../src/app.module';
-import { TaskService } from '../src/todo/task.service';
 import { Task } from '../src/todo/task.entity';
+import { TaskService } from '../src/todo/task.service';
 
 const uuidRegex = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/;
 const isoDateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/;
@@ -20,6 +23,9 @@ describe('TaskResolver (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    const dataSource = app.get<DataSource>(getDataSourceToken());
+    await runSeeders(dataSource);
+
     await app.init();
     task = await app.get(TaskService).createOne('Learn E2E tests');
   });
