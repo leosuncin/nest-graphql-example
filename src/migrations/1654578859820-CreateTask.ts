@@ -42,22 +42,9 @@ export class CreateTask1654578859820 implements MigrationInterface {
     });
 
     await queryRunner.createTable(todoTable, true);
-    // await queryRunner.query(/* sql */ `
-    //   CREATE TABLE \`task\` (
-    //     \`id\` varchar(36) NOT NULL,
-    //     \`title\` varchar(255) NOT NULL,
-    //     \`completed\` tinyint NOT NULL DEFAULT 0,
-    //     \`createdAt\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-    //     \`updatedAt\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-    //     PRIMARY KEY (\`id\`)
-    //   ) ENGINE = InnoDB
-    // `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropTable(this.#tableName);
-    // await queryRunner.query(/* sql */ `
-    //   DROP TABLE \`task\`
-    // `);
   }
 }
