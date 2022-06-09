@@ -46,3 +46,50 @@ jobs:
         with:
           name: unit-coverage
           path: coverage
+
+  e2e:
+    name: Run the end to end tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: graphql-example
+          MYSQL_USER: presoak5985
+          MYSQL_PASSWORD: i3oM9xjTN4S7cqBc
+        ports:
+          - 3306:3306
+        # needed because the mysql container does not provide a health check
+        options: --health-cmd 'mysqladmin ping -h localhost -u presoak5985 -pi3oM9xjTN4S7cqBc' --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+      - name: Install Node.js LTS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --strict-peer-dependencies
+      - name: Run migrations
+        run: |
+          pnpm typeorm migration:run
+          pnpm db:seed
+        env:
+          DATABASE_URL: mysql://presoak5985:i3oM9xjTN4S7cqBc@localhost:${{ job.services.mysql.ports['3306'] }}/graphql-example
+      - name: Run tests
+        run: pnpm test:e2e --ci --json --testLocationInResults --outputFile=result.json
+        env:
+          PORT: 3000
+          DATABASE_URL: mysql://presoak5985:i3oM9xjTN4S7cqBc@localhost:${{ job.services.mysql.ports['3306'] }}/graphql-example
+      - name: Report test results
+        uses: tanmen/jest-reporter@v1
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          action-name: e2e report
