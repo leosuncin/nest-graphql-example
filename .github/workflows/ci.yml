@@ -51,17 +51,6 @@ jobs:
     name: Run the end to end tests
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_DATABASE: graphql-example
-          MYSQL_USER: presoak5985
-          MYSQL_PASSWORD: i3oM9xjTN4S7cqBc
-        ports:
-          - 3306:3306
-        # needed because the mysql container does not provide a health check
-        options: --health-cmd 'mysqladmin ping -h localhost -u presoak5985 -pi3oM9xjTN4S7cqBc' --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3
@@ -74,19 +63,22 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: pnpm
+      - name: Start MySQL
+        run: sudo systemctl start mysql.service
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
-      - name: Run migrations
+      - name: Create the database and run the migrations
         run: |
+          pnpm db:create --synchronize no
           pnpm typeorm migration:run
           pnpm db:seed
         env:
-          DATABASE_URL: mysql://presoak5985:i3oM9xjTN4S7cqBc@localhost:${{ job.services.mysql.ports['3306'] }}/graphql-example
+          DATABASE_URL: mysql://root:root@localhost/graphql-example
       - name: Run tests
         run: pnpm test:e2e --ci --json --testLocationInResults --outputFile=result.json
         env:
           PORT: 3000
-          DATABASE_URL: mysql://presoak5985:i3oM9xjTN4S7cqBc@localhost:${{ job.services.mysql.ports['3306'] }}/graphql-example
+          DATABASE_URL: mysql://root:root@localhost/graphql-example
       - name: Report test results
         uses: tanmen/jest-reporter@v1
         if: always()
