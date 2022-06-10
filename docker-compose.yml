@@ -7,23 +7,21 @@ services:
     volumes:
       - mysql-vol:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
-    healthcheck:  
-      test: "mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}"
+    healthcheck:
+      test: 'mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD}'
       interval: 1s
       timeout: 1s
       retries: 60
-  phpmyadmin:
-    image: phpmyadmin:5.2.0-fpm-alpine
+  adminer:
+    image: adminer
     restart: on-failure
     depends_on:
       mysql:
         condition: service_healthy
     ports:
-      - 8080:80
+      - 8080:8080
     environment:
-      PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      ADMINER_DEFAULT_SERVER: mysql
 
 volumes:
   mysql-vol:
