@@ -1,10 +1,10 @@
 {
   "name": "nest-graphql-example",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Example of GraphQL with Nest.js and TypeORM ",
+  "author": "Jaime Leonardo Suncin Cruz <leosuncin@gmail.com>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "GPL-3.0",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
