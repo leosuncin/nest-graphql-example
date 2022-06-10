@@ -8,9 +8,9 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "db:create": "NODE_ENV=test ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js db:create -d src/config/orm.config",
-    "db:drop": "NODE_ENV=test ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js db:drop -d src/config/orm.config",
-    "db:seed": "NODE_ENV=test ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js seed -d src/config/orm.config",
+    "db:create": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js db:create -d src/config/orm.config",
+    "db:drop": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js db:drop -d src/config/orm.config",
+    "db:seed": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js seed -d src/config/orm.config",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "NODE_OPTIONS='-r dotenv/config' nest start --watch",

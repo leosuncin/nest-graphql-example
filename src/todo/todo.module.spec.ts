@@ -7,7 +7,7 @@ import * as request from 'supertest';
 import { DataSource } from 'typeorm';
 import { runSeeders } from 'typeorm-extension';
 
-import loadDataSourceOptions from '../config/orm.config';
+import loadTypeOrmOptions from '../config/orm.config';
 import { Task } from './task.entity';
 import { TaskService } from './task.service';
 import { TodoModule } from './todo.module';
@@ -23,11 +23,7 @@ describe('TodoModule integration test', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        TypeOrmModule.forRoot({
-          ...loadDataSourceOptions(),
-          type: 'sqlite',
-          database: ':memory:',
-        }),
+        TypeOrmModule.forRoot(loadTypeOrmOptions()),
         GraphQLModule.forRoot<ApolloDriverConfig>({
           driver: ApolloDriver,
           autoSchemaFile: true,

@@ -16,16 +16,18 @@ const mainOptions: DataSourceOptions = {
 };
 
 const testOptions: DataSourceOptions & SeederOptions = {
-  ...mainOptions,
+  type: 'sqlite',
+  database: ':memory:',
+  synchronize: false,
   migrationsRun: true,
+  entities: [Task],
+  migrations: [CreateTask1654578859820],
   factories: [TaskFactory],
   seeds: [TaskSeeder],
 };
 
 // used by CLI commands
-export const AppDataSource = new DataSource(
-  process.env.NODE_ENV === 'test' ? testOptions : mainOptions,
-);
+export const AppDataSource = new DataSource({ ...testOptions, ...mainOptions });
 
 export default registerAs('orm', () =>
   process.env.NODE_ENV === 'test' ? testOptions : mainOptions,
