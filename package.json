@@ -55,6 +55,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.2.5",
     "jest-create-mock-instance": "^2.0.0",
+    "pactum": "^3.1.9",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
     "sqlite3": "^5.0.8",

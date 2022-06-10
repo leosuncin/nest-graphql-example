@@ -1,28 +1,28 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { HttpStatus, INestApplication } from '@nestjs/common';
+import { request, spec } from 'pactum';
+
+import { bootstrap } from '../src/main';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    app = await bootstrap({ logger: false });
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    await app.listen(0);
+
+    const url = await app.getUrl();
+    request.setBaseUrl(url.replace('::', 'localhost'));
   });
 
   afterEach(async () => {
     await app.close();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
+  it('/ (GET)', async () => {
+    await spec()
       .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .expectStatus(HttpStatus.OK)
+      .expectBody('Hello World!');
   });
 });

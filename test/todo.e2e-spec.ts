@@ -1,33 +1,22 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { getDataSourceToken } from '@nestjs/typeorm';
-import * as request from 'supertest';
-import type { DataSource } from 'typeorm';
-import { runSeeders } from 'typeorm-extension';
+import { request, spec } from 'pactum';
 
-import { AppModule } from '../src/app.module';
-import { Task } from '../src/todo/task.entity';
-import { TaskService } from '../src/todo/task.service';
+import { bootstrap } from '../src/main';
 
 const uuidRegex = /[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}/;
 const isoDateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/;
 
 describe('TaskResolver (e2e)', () => {
   let app: INestApplication;
-  let task: Task;
   const graphqlEndpoint = '/graphql';
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    app = await bootstrap({ logger: false });
 
-    app = moduleFixture.createNestApplication();
-    const dataSource = app.get<DataSource>(getDataSourceToken());
-    await runSeeders(dataSource);
+    await app.listen(0);
+    const url = await app.getUrl();
 
-    await app.init();
-    task = await app.get(TaskService).createOne('Learn E2E tests');
+    request.setBaseUrl(url.replace('::', 'localhost'));
   });
 
   afterAll(async () => {
@@ -46,28 +35,24 @@ describe('TaskResolver (e2e)', () => {
       }
     }`;
 
-    await request(app.getHttpServer())
+    await spec()
       .post(graphqlEndpoint)
-      .send({
-        query: addTask,
-        variables: { title },
-      })
-      .set('accept', 'application/json')
-      .expect(HttpStatus.OK)
-      .expect('content-type', /application\/json/)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          data: {
-            addTask: {
-              completed: false,
-              createdAt: expect.stringMatching(isoDateRegex),
-              id: expect.stringMatching(uuidRegex),
-              title,
-              updatedAt: expect.stringMatching(isoDateRegex),
-            },
+      .withGraphQLQuery(addTask)
+      .withGraphQLVariables({ title })
+      .expectStatus(HttpStatus.OK)
+      .expectJsonLike({
+        data: {
+          addTask: {
+            completed: false,
+            createdAt: isoDateRegex,
+            id: uuidRegex,
+            title,
+            updatedAt: isoDateRegex,
           },
-        });
-      });
+        },
+      })
+      .stores('task', '.data.addTask')
+      .toss();
   });
 
   it('should return all tasks', async () => {
@@ -81,20 +66,17 @@ describe('TaskResolver (e2e)', () => {
       }
     }`;
 
-    await request(app.getHttpServer())
+    await spec()
       .post(graphqlEndpoint)
-      .send({
-        query: listAll,
-      })
-      .set('accept', 'application/json')
-      .expect(HttpStatus.OK)
-      .expect('content-type', /application\/json/)
-      .expect(({ body }) => {
+      .withGraphQLQuery(listAll)
+      .expectStatus(HttpStatus.OK)
+      .expect(({ res: { body } }) => {
         const { tasks } = body.data;
 
         expect(Array.isArray(tasks)).toBe(true);
         expect(tasks.length).toBeGreaterThanOrEqual(0);
-      });
+      })
+      .toss();
   });
 
   it('should update a task', async () => {
@@ -109,31 +91,27 @@ describe('TaskResolver (e2e)', () => {
       }
     }`;
 
-    await request(app.getHttpServer())
+    await spec()
       .post(graphqlEndpoint)
-      .send({
-        query: updateTask,
-        variables: {
-          id: task.id,
-          updateTaskInput: changes,
+      .withGraphQLQuery(updateTask)
+      .withGraphQLVariables({
+        id: '$S{task.id}',
+        updateTaskInput: changes,
+      })
+      .expectStatus(HttpStatus.OK)
+      .expectJsonLike({
+        data: {
+          updateTask: {
+            completed: changes.completed,
+            createdAt: isoDateRegex,
+            id: '$S{task.id}',
+            title: changes.title,
+            updatedAt: isoDateRegex,
+          },
         },
       })
-      .set('accept', 'application/json')
-      .expect(HttpStatus.OK)
-      .expect('content-type', /application\/json/)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          data: {
-            updateTask: {
-              completed: changes.completed,
-              createdAt: expect.stringMatching(isoDateRegex),
-              id: task.id,
-              title: changes.title,
-              updatedAt: expect.stringMatching(isoDateRegex),
-            },
-          },
-        });
-      });
+      .stores('task', '.data.updateTask')
+      .toss();
   });
 
   it('should delete a task', async () => {
@@ -147,29 +125,22 @@ describe('TaskResolver (e2e)', () => {
       }
     }`;
 
-    await request(app.getHttpServer())
+    await spec()
       .post(graphqlEndpoint)
-      .send({
-        query: deleteTask,
-        variables: {
-          id: task.id,
+      .withGraphQLQuery(deleteTask)
+      .withGraphQLVariables({ id: '$S{task.id}' })
+      .expectStatus(HttpStatus.OK)
+      .expectJsonLike({
+        data: {
+          deleteTask: {
+            completed: '$S{task.completed}',
+            createdAt: '$S{task.createdAt}',
+            id: '$S{task.id}',
+            title: '$S{task.title}',
+            updatedAt: '$S{task.updatedAt}',
+          },
         },
       })
-      .set('accept', 'application/json')
-      .expect(HttpStatus.OK)
-      .expect('content-type', /application\/json/)
-      .expect(({ body }) => {
-        expect(body).toMatchObject({
-          data: {
-            deleteTask: {
-              completed: expect.any(Boolean),
-              createdAt: expect.stringMatching(isoDateRegex),
-              id: task.id,
-              title: expect.any(String),
-              updatedAt: expect.stringMatching(isoDateRegex),
-            },
-          },
-        });
-      });
+      .toss();
   });
 });

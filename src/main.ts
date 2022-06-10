@@ -1,13 +1,12 @@
-import { ConfigService } from '@nestjs/config';
+import type { NestApplicationOptions } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const config = app.get(ConfigService);
-
-  await app.listen(config.get('PORT') ?? 3000);
+export async function bootstrap(options?: NestApplicationOptions) {
+  return NestFactory.create(AppModule, options);
 }
 
-bootstrap();
+if (require.main === module) {
+  void bootstrap().then((app) => app.listen(process.env.PORT ?? 3000));
+}
