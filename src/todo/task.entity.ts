@@ -18,7 +18,7 @@ export class Task {
   @Field()
   title: string;
 
-  @Column({ default: false, type: 'bool' })
+  @Column({ default: false, type: 'boolean' })
   @Field(() => Boolean)
   completed = false;
 
