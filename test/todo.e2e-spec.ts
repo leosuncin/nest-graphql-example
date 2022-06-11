@@ -13,10 +13,10 @@ describe('TaskResolver (e2e)', () => {
   beforeAll(async () => {
     app = await bootstrap({ logger: false });
 
-    await app.listen(0);
+    await app.listen(0, '127.0.0.1');
     const url = await app.getUrl();
 
-    request.setBaseUrl(url.replace('::', 'localhost'));
+    request.setBaseUrl(url);
   });
 
   afterAll(async () => {

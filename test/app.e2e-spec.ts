@@ -9,10 +9,10 @@ describe('AppController (e2e)', () => {
   beforeEach(async () => {
     app = await bootstrap({ logger: false });
 
-    await app.listen(0);
+    await app.listen(0, '127.0.0.1');
 
     const url = await app.getUrl();
-    request.setBaseUrl(url.replace('::', 'localhost'));
+    request.setBaseUrl(url);
   });
 
   afterEach(async () => {
