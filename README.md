@@ -127,7 +127,7 @@ Here are some more example projects with Nest.js
 
 [![API example](https://github-readme-stats.vercel.app/api/pin/?username=leosuncin&repo=nest-api-example)](https://github.com/leosuncin/nest-api-example)
 
-[![TypeORM custom repository](https://github-readme-stats.vercel.app/api/pin/?username=leosuncin&repo=nest-typeorm-custom-repository)](https://github.com/leosuncin/nest-api-example)
+[![TypeORM custom repository](https://github-readme-stats.vercel.app/api/pin/?username=leosuncin&repo=nest-typeorm-custom-repository)](https://github.com/leosuncin/nest-typeorm-custom-repository)
 
 ## License
 
