@@ -5,8 +5,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'node:path';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import loadORM from './config/orm.config';
 import { TodoModule } from './todo/todo.module';
 
@@ -29,7 +27,5 @@ import { TodoModule } from './todo/todo.module';
     }),
     TodoModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

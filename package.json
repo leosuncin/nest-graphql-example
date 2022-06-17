@@ -8,10 +8,10 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "db:create": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js db:create -d src/config/orm.config",
-    "db:drop": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js db:drop -d src/config/orm.config",
-    "db:seed": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js seed -d src/config/orm.config",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "db:create": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js db:create -d apps/basic-example/src/config/orm.config",
+    "db:drop": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js db:drop -d apps/basic-example/src/config/orm.config",
+    "db:seed": "ts-node -r dotenv/config -r tsconfig-paths/register ./node_modules/typeorm-extension/dist/cli/index.js seed -d apps/basic-example/src/config/orm.config",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "NODE_OPTIONS='-r dotenv/config' nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -21,8 +21,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "NODE_OPTIONS='-r dotenv/config -r tsconfig-paths/register' typeorm-ts-node-commonjs -d src/config/orm.config"
+    "test:e2e": "jest --config ./apps/basic-example/test/jest-e2e.json",
+    "typeorm": "NODE_OPTIONS='-r dotenv/config -r tsconfig-paths/register' typeorm-ts-node-commonjs -d apps/basic-example/src/config/orm.config"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.14",
@@ -73,7 +73,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -81,7 +81,10 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/apps/"
+    ]
   }
 }
