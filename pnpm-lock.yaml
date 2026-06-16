@@ -14,7 +14,7 @@ specifiers:
   '@types/express': 4.17.13
   '@types/jest': 27.4.1
   '@types/node': 16.11.38
-  '@types/supertest': 2.0.12
+  '@types/supertest': 2.0.16
   '@typescript-eslint/eslint-plugin': 5.62.0
   '@typescript-eslint/parser': 5.62.0
   apollo-server-express: ^3.8.2
@@ -64,7 +64,7 @@ devDependencies:
   '@types/express': 4.17.13
   '@types/jest': 27.4.1
   '@types/node': 16.11.38
-  '@types/supertest': 2.0.12
+  '@types/supertest': 2.0.16
   '@typescript-eslint/eslint-plugin': 5.62.0_kwrjezmwbmtqbyzuvb54srbwdi
   '@typescript-eslint/parser': 5.62.0_ud6rd4xtew5bv4yhvkvu24pzm4
   eslint: 8.17.0
@@ -1557,8 +1557,8 @@ packages:
       '@types/node': 16.11.38
     dev: true
 
-  /@types/supertest/2.0.12:
-    resolution: {integrity: sha512-X3HPWTwXRerBZS7Mo1k6vMVR1Z6zmJcDVn5O/31whe0tnjE4te6ZJSJGq1RiqHPjzPdMTfjCFogDJmwng9xHaQ==}
+  /@types/supertest/2.0.16:
+    resolution: {integrity: sha512-6c2ogktZ06tr2ENoZivgm7YnprnhYE4ZoXGMY+oA7IuAf17M8FWvujXZGmxLv8y0PTyts4x5A+erSwVUFA8XSg==}
     dependencies:
       '@types/superagent': 4.1.15
     dev: true
