@@ -13,13 +13,13 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Install PNPM
         uses: pnpm/action-setup@v2
         with:
           version: latest
       - name: Install Node.js LTS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           node-version: 'lts/*'
           cache: pnpm
@@ -28,12 +28,12 @@ jobs:
       - name: Run tests
         run: pnpm test:cov --ci --json --testLocationInResults --outputFile=result.json
       - name: Report test results
-        uses: tanmen/jest-reporter@v1
+        uses: tanmen/jest-reporter@b51194185b294febdbe6d848f31f15614a06e2e3 # v1
         if: always()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Monitor coverage
-        uses: slavcodev/coverage-monitor-action@1.6.0
+        uses: slavcodev/coverage-monitor-action@90fb3ebbefe5db4893c85f687552f6fd10bb191f # 1.6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           coverage_format: clover
@@ -42,7 +42,7 @@ jobs:
           threshold_alert: 50
           threshold_warning: 80
       - name: Upload code coverage
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           name: unit-coverage
           path: coverage
@@ -53,13 +53,13 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Install PNPM
         uses: pnpm/action-setup@v2
         with:
           version: latest
       - name: Install Node.js LTS
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3
         with:
           node-version: 'lts/*'
           cache: pnpm
@@ -80,7 +80,7 @@ jobs:
           PORT: 3000
           DATABASE_URL: mysql://root:root@localhost/graphql-example
       - name: Report test results
-        uses: tanmen/jest-reporter@v1
+        uses: tanmen/jest-reporter@b51194185b294febdbe6d848f31f15614a06e2e3 # v1
         if: always()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
